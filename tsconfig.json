@@ -1,0 +1,27 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "outDir": "./build",
+    "rootDir": ".",
+    "jsx": "react-jsx",
+    "types": ["node"],
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["resources/js/*"],
+      "#controllers/*": ["app/controllers/*.js"],
+      "#models/*": ["app/models/*.js"]
+    }
+  },
+  "include": ["ace.js", "adonisrc.ts", "app/**/*", "config/**/*", "start/**/*", "tests/**/*", "resources/js/**/*"],
+  "exclude": ["node_modules", "build", "public"]
+}
