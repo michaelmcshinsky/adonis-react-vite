@@ -15,7 +15,7 @@ describe('project structure', () => {
   });
 
   it('React app exports an App component', () => {
-    const entry = readFileSync(new URL('../../resources/js/App.tsx', import.meta.url), 'utf-8');
+    const entry = readFileSync(new URL('../../resources/js/app.tsx', import.meta.url), 'utf-8');
     expect(entry).toContain('export function App');
     expect(entry).toContain('Adonis + React + Vite');
   });
