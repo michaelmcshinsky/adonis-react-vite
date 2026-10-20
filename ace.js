@@ -1,7 +1,10 @@
 #!/usr/bin/env node
 
-import 'reflect-metadata'
-import { binPath } from '@adonisjs/core'
+import 'reflect-metadata';
+import { Ignitor } from '@adonisjs/core';
 
-process.title = 'adonis-react-vite ace'
-await binPath(new URL('./build/adonisrc/ace.js', import.meta.url))
+const ignitor = new Ignitor(new URL('./', import.meta.url), {
+  environment: process.env.NODE_ENV,
+});
+
+await ignitor.ace().handle(process.argv.slice(2));
