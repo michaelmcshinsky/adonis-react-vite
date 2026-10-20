@@ -26,7 +26,7 @@
   "dependencies": {
     "@adonisjs/core": "^6.21.0",
     "@adonisjs/lucid": "^21.8.0",
-    "@adonisjs/static": "^1.1.1",
+    "@adonisjs/static": "^2.0.1",
     "@adonisjs/view": "^7.0.0-7",
     "@adonisjs/vite": "^4.0.0",
     "@vinejs/vine": "^3.0.1",
