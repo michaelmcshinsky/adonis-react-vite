@@ -1,8 +1,4 @@
 export default {
-  compileData: true,
-  commands: {
-    ace: 'build/adonisrc/commands.js',
-  },
   providers: [
     () => import('@adonisjs/core'),
     () => import('@adonisjs/lucid/database_provider'),
