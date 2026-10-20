@@ -41,7 +41,7 @@
     "@adonisjs/assembler": "^7.5.1",
     "@japa/runner": "^5.4.0",
     "@types/luxon": "^3.7.6",
-    "@types/node": "^22.10.2",
+    "@types/node": "^26.6.5",
     "@types/react": "^19.0.2",
     "@types/react-dom": "^19.0.2",
     "@vitejs/plugin-react": "^4.3.4",
