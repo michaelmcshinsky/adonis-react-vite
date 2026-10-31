@@ -19,6 +19,7 @@
     "build": "tsx ace.js build",
     "start": "node server.js",
     "test": "vitest run",
+    "test:functional": "tsx bin/test.ts",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
     "migrate": "tsx ace.js migration:run",
@@ -41,6 +42,8 @@
   },
   "devDependencies": {
     "@adonisjs/assembler": "^7.8.2",
+    "@japa/api-client": "^3.2.1",
+    "@japa/assert": "^4.2.0",
     "@japa/runner": "^5.4.0",
     "@types/luxon": "^3.7.6",
     "@types/node": "^22.20.5",
