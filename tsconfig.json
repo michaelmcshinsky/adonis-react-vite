@@ -19,9 +19,19 @@
     "paths": {
       "@/*": ["resources/js/*"],
       "#controllers/*": ["app/controllers/*.js"],
-      "#models/*": ["app/models/*.js"]
+      "#models/*": ["app/models/*.js"],
+      "#validators/*": ["app/validators/*.js"]
     }
   },
-  "include": ["ace.js", "adonisrc.ts", "app/**/*", "config/**/*", "start/**/*", "tests/**/*", "resources/js/**/*"],
+  "include": [
+    "ace.js",
+    "adonisrc.ts",
+    "app/**/*",
+    "config/**/*",
+    "start/**/*",
+    "tests/**/*",
+    "resources/js/**/*",
+    "types/**/*"
+  ],
   "exclude": ["node_modules", "build", "public"]
 }

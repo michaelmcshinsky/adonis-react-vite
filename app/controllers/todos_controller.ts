@@ -1,28 +1,31 @@
-import type { HttpContext } from '@adonisjs/core/http';
-import Todo from '#models/todo';
+import type { HttpContext } from '@adonisjs/core/http'
+import Todo from '#models/todo'
+import { createTodoValidator } from '#validators/todo_validator'
 
 export default class TodosController {
+  /**
+   * List all todos ordered by most recent first.
+   */
   async index({ response }: HttpContext) {
-    const todos = await Todo.query().orderBy('created_at', 'desc');
-    return response.json(todos);
+    const todos = await Todo.query().orderBy('created_at', 'desc')
+    return response.json(todos)
   }
 
+  /**
+   * Create a new todo after validating the request body with VineJS.
+   */
   async store({ request, response }: HttpContext) {
-    const raw = request.body() as { title?: string };
-    const title = String(raw.title ?? '').trim();
-    if (title.length < 1 || title.length > 200) {
-      return response.status(422).json({
-        message: 'Validation failed',
-        errors: { title: ['Title must be 1-200 characters'] },
-      });
-    }
-    const todo = await Todo.create({ title, completed: false });
-    return response.status(201).json(todo);
+    const data = await request.validateUsing(createTodoValidator)
+    const todo = await Todo.create({ title: data.title, completed: false })
+    return response.status(201).json(todo)
   }
 
+  /**
+   * Delete a todo by ID.
+   */
   async destroy({ params, response }: HttpContext) {
-    const todo = await Todo.findOrFail(params.id);
-    await (todo as unknown as { delete: () => Promise<void> }).delete();
-    return response.status(204).send(null);
+    const todo = await Todo.findOrFail(params.id)
+    await todo.delete()
+    return response.status(204).send(null)
   }
 }

@@ -8,7 +8,8 @@
   "repository": "https://github.com/michaelmcshinsky/adonis-react-vite",
   "imports": {
     "#controllers/*": "./app/controllers/*.js",
-    "#models/*": "./app/models/*.js"
+    "#models/*": "./app/models/*.js",
+    "#validators/*": "./app/validators/*.js"
   },
   "engines": {
     "node": ">=20"
