@@ -1,76 +1,97 @@
-import { FormEvent, useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState, type FormEvent } from 'react'
+import { createRoot } from 'react-dom/client'
+import { ApiError, api, type Todo } from './lib/api.js'
+import { ErrorBoundary } from './components/ErrorBoundary.js'
+import './styles.css'
 
-interface Todo {
-  id: number;
-  title: string;
-  completed: boolean;
+function errorMessage(err: unknown, fallback: string): string {
+  return err instanceof ApiError ? err.message : fallback
 }
 
 export function App() {
-  const [todos, setTodos] = useState<Todo[]>([]);
-  const [title, setTitle] = useState('');
-  const [health, setHealth] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [todos, setTodos] = useState<Todo[]>([])
+  const [title, setTitle] = useState('')
+  const [health, setHealth] = useState<string | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [submitting, setSubmitting] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   const loadTodos = useCallback(async () => {
-    const res = await fetch('/api/todos');
-    const data = (await res.json()) as Todo[];
-    setTodos(data);
-  }, []);
+    try {
+      const data = await api.listTodos()
+      setTodos(data)
+      setError(null)
+    } catch (err) {
+      setError(errorMessage(err, 'Failed to load todos'))
+    }
+  }, [])
 
   useEffect(() => {
     Promise.all([
-      fetch('/api/health')
-        .then((r) => r.json())
-        .then((d: unknown) => {
-          const s = (d as { status?: string }).status;
-          setHealth(s ?? 'unknown');
-        }),
+      api.getHealth().then((d: { status: string }) => setHealth(d.status)),
       loadTodos(),
     ])
       .catch(() => setHealth('unreachable'))
-      .finally(() => setLoading(false));
-  }, [loadTodos]);
+      .finally(() => setLoading(false))
+  }, [loadTodos])
 
   async function onAdd(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    if (!title.trim()) return;
-    await fetch('/api/todos', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ title: title.trim() }),
-    });
-    setTitle('');
-    await loadTodos();
+    e.preventDefault()
+    const trimmed = title.trim()
+    if (!trimmed || submitting) return
+
+    setSubmitting(true)
+    try {
+      await api.createTodo(trimmed)
+      setTitle('')
+      await loadTodos()
+    } catch (err) {
+      setError(errorMessage(err, 'Failed to create todo'))
+    } finally {
+      setSubmitting(false)
+    }
   }
 
   async function onDelete(id: number) {
-    await fetch(`/api/todos/${id}`, { method: 'DELETE' });
-    await loadTodos();
+    try {
+      await api.deleteTodo(id)
+      await loadTodos()
+    } catch (err) {
+      setError(errorMessage(err, 'Failed to delete todo'))
+    }
   }
 
   return (
     <section className="mx-auto max-w-lg py-12">
       <h1 className="text-3xl font-bold">Adonis + React + Vite</h1>
       <p className="mt-2 text-sm text-gray-500">
-        API health: {loading ? 'checking…' : health}
+        API health: {loading ? 'checking...' : health}
       </p>
+
+      {error && (
+        <div
+          role="alert"
+          className="mt-4 rounded border border-red-300 bg-red-50 px-3 py-2 text-sm text-red-700"
+        >
+          {error}
+        </div>
+      )}
 
       <form onSubmit={onAdd} className="mt-8 flex gap-2">
         <input
           value={title}
-          onChange={(e) => {
-            const el = e.target as HTMLInputElement;
-            setTitle(el.value);
-          }}
-          placeholder="Add a todo…"
-          className="flex-1 rounded border border-gray-300 px-3 py-2"
+          onChange={(e) => setTitle(e.target.value)}
+          placeholder="Add a todo..."
+          maxLength={200}
+          disabled={submitting}
+          className="flex-1 rounded border border-gray-300 px-3 py-2 disabled:opacity-50"
         />
         <button
           type="submit"
-          className="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+          disabled={submitting || !title.trim()}
+          className="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 disabled:opacity-50"
         >
-          Add
+          {submitting ? 'Adding...' : 'Add'}
         </button>
       </form>
 
@@ -92,5 +113,14 @@ export function App() {
         )}
       </ul>
     </section>
-  );
+  )
+}
+
+const container = document.getElementById('root')
+if (container) {
+  createRoot(container).render(
+    <ErrorBoundary>
+      <App />
+    </ErrorBoundary>,
+  )
 }
