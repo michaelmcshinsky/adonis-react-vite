@@ -13,7 +13,7 @@ Successor to the archived [adonis-mix-react](https://github.com/michaelmcshinsky
 | UI | React 19 + TypeScript |
 | Styling | Tailwind CSS 3 (PostCSS) |
 | Database | PostgreSQL (Lucid) |
-| Tests | Japa (functional) |
+| Tests | Vitest (unit) + Japa (functional) |
 
 ## Project layout
 
@@ -23,24 +23,29 @@ app/
   models/        # Lucid models (Todo)
   providers/     # App service provider
   validators/    # Vine validation schemas
-config/          # Adonis config (app, database)
+config/          # Adonis config (app, database, vite)
 database/
+  migrations/    # Schema migrations
   seeders/       # Demo seed data
 resources/
-  js/            # React app (Vite root)
+  js/            # React app (Vite entry)
+    components/  # React components
+    lib/         # API client, utilities
   views/         # Edge template mounting the SPA
 start/           # routes, kernel
-tests/           # Japa functional tests
+tests/
+  functional/    # Japa functional tests
+types/           # TypeScript module augmentations
 ```
 
 ## Quick start
 
 ```bash
 cp .env.example .env
-# set APP_KEY (32+ chars), APP_SECRET, and Postgres credentials
+npm run key:generate   # sets APP_KEY in .env
 npm install
-npm run migration:run   # after creating the DB
-npm run seed            # optional demo todos
+npm run migrate        # create the database tables
+npm run seed           # optional demo todos
 npm run dev
 ```
 
@@ -53,8 +58,14 @@ Server runs at http://localhost:3333 with HMR for both Adonis and the React app.
 | `npm run dev` | Adonis dev server with HMR |
 | `npm run build` | Production build (server + Vite assets) |
 | `npm start` | Run the production build |
-| `npm test` | Japa functional tests |
+| `npm test` | Vitest unit/structural tests |
+| `npm run test:functional` | Japa functional tests (requires database) |
 | `npm run typecheck` | `tsc --noEmit` |
+| `npm run lint` | ESLint |
+| `npm run migrate` | Run database migrations |
+| `npm run migrate:rollback` | Rollback last migration batch |
+| `npm run seed` | Seed demo data |
+| `npm run key:generate` | Generate APP_KEY |
 
 ## API
 
@@ -64,6 +75,9 @@ Server runs at http://localhost:3333 with HMR for both Adonis and the React app.
 | GET | `/api/todos` | List todos |
 | POST | `/api/todos` | Create todo (`{ title }`) |
 | DELETE | `/api/todos/:id` | Delete todo |
+
+POST validation rules (VineJS):
+- `title`: required, trimmed string, 1-200 characters
 
 ## Why this exists
 
