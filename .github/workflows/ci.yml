@@ -26,22 +26,39 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+    env:
+      NODE_ENV: test
+      APP_KEY: "12345678901234567890123456789012"
+      APP_SECRET: test-secret-test-secret-test-secret
+      PG_HOST: localhost
+      PG_PORT: 5432
+      PG_USER: postgres
+      PG_PASSWORD: postgres
+      PG_DB_NAME: adonis_react_vite_test
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
+
       - run: npm ci
-      - run: npm run typecheck
-      - name: Run tests
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Unit & structural tests
         run: npm test
-        env:
-          NODE_ENV: test
-          APP_KEY: "12345678901234567890123456789012"
-          APP_SECRET: test-secret-test-secret-test-secret
-          PG_HOST: localhost
-          PG_PORT: 5432
-          PG_USER: postgres
-          PG_PASSWORD: postgres
-          PG_DB_NAME: adonis_react_vite_test
+
+      - name: Run database migrations
+        run: npm run migrate
+
+      - name: Functional tests
+        run: npm run test:functional
+
+      - name: Production build
+        run: npm run build
