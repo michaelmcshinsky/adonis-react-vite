@@ -14,14 +14,14 @@
     "node": ">=20"
   },
   "scripts": {
-    "dev": "node ace serve --hmr",
-    "build": "node ace build --production",
+    "dev": "tsx ace.js serve --hmr",
+    "build": "tsx ace.js build",
     "start": "node server.js",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
-    "migrate": "node ace migration:run",
-    "seed": "node ace db:seed"
+    "migrate": "tsx ace.js migration:run",
+    "seed": "tsx ace.js db:seed"
   },
   "dependencies": {
     "@adonisjs/core": "^6.21.0",

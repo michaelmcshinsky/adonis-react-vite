@@ -1,12 +1,17 @@
-import { defineConfig } from 'vite';
-import adonisjs from '@adonisjs/vite/client';
-import react from '@vitejs/plugin-react';
+import { defineConfig } from 'vite'
+import adonisjs from '@adonisjs/vite/client'
+import react from '@vitejs/plugin-react'
 
 export default defineConfig({
-  plugins: [adonisjs(), react()],
-  root: 'resources/js',
+  plugins: [
+    adonisjs({
+      entrypoints: ['resources/js/app.tsx'],
+      reload: ['resources/views/**/*.edge'],
+    }),
+    react(),
+  ],
   build: {
-    outDir: '../../public/assets',
+    outDir: 'public/assets',
     emptyOutDir: true,
   },
-});
+})
